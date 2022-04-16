@@ -46,7 +46,7 @@ function validatePlayerChoice(choice) {
 }
 
 function playRound(playerSelection, computerSelection) {
-    //plays one round, return 
+    //plays one round, return winner so we can keep score
     let matchup = "";
     let winner = "";
 
