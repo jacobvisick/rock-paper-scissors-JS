@@ -1,0 +1,32 @@
+body {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+}
+
+.results-container {
+    display: flex;
+}
+
+.score-container, .matchup {
+    flex: 1 0;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+}
+
+.score-container h3 {
+    margin: 2px;
+    text-align: center;
+}
+
+#computer-score, #player-score {
+    align-self: center;
+    padding: 20px;
+}
+
+h1, .button-container {
+    align-self: center;
+    margin: 20px;
+}
