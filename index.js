@@ -1,13 +1,26 @@
-const ROCK = 0;
-const PAPER = 1;
-const SCISSORS = 2;
+const ROCK = 'rock';
+const PAPER = 'paper';
+const SCISSORS = 'scissors';
+
+const playerScoreElement = document.querySelector('#player-score');
+const computerScoreElement = document.querySelector('#computer-score');
+const matchupElement = document.querySelector('div.matchup');
+
+let roundsPlayed = 0;
+let playerWins = 0;
+let computerWins = 0;
 
 function getComputerChoice() {
     // generate random int from 0-2, which matches our constants for each choice
     // Multiply by 3 so we have 3 different integers possible, then Math.floor to return an int
-    let play = Math.floor(Math.random() * 3);
+    let choice = Math.floor(Math.random() * 3);
 
-    return play;
+    if (choice === 0) choice = ROCK;
+    else if (choice === 1) choice = PAPER;
+    else if (choice === 2) choice = SCISSORS;
+    else alert("computer choice: " + choice);
+
+    return choice;
 }
 
 function getPlayerChoice() {
@@ -115,33 +128,56 @@ function playRound(playerSelection, computerSelection) {
             console.log("Computer choice: " + computerSelection);
     }
 
-    // log matchup so we only have to type console.log once,
-    // then return winner so we can keep count out of 5 rounds
-    console.log(matchup);
+    matchupElement.textContent = playerSelection + " vs " + computerSelection;
     return winner;
 }
 
-function game() {
-    //play "best out of 5" and log our results
-    let wins = 0;
-    let losses = 0;
-    let draws = 0;
+function endGame() {
+    document.querySelectorAll('button').forEach(button => {
+        button.removeEventListener('click', buttonListener);
+    });
 
-    for (let i = 0; i < 5; i++) {
-        let result = playRound(getPlayerChoice(), getComputerChoice());
-
-        if (result == "computer") losses++;
-        else if (result == "player") wins++;
-        else if (result == "draw") draws++;
-        else console.log(result);
+    let winnerElement = document.createElement('span');
+    
+    if (playerWins > computerWins) {
+        winnerElement.textContent = 'You win!';
+        winnerElement.style.color = 'lightgreen';
+    } else {
+        winnerElement.textContent = 'You lose!';
+        winnerElement.style.color = 'lightcoral';
     }
 
-    console.log("Wins: " + wins);
-    console.log("Losses: " + losses);
-    console.log("Draws: " + draws);
-    
-    if (wins > losses) console.log("You're the champion!");
-    else console.log("Better luck next time...");
+    matchupElement.appendChild(winnerElement);
 }
 
-game();
+function buttonListener(e) {
+    const winner = playRound(this.getAttribute('id'), getComputerChoice());
+    updateScore(winner);
+}
+
+function updateScore(winner) {
+    roundsPlayed++;
+    const playerScoreboard = playerScoreElement.parentNode;
+    const computerScoreboard = computerScoreElement.parentNode;
+
+    if (winner === 'player') {
+        playerScoreboard.style.backgroundColor = 'lightgreen';
+        computerScoreboard.style.backgroundColor = 'lightcoral';
+        playerWins++;
+    } else if (winner === 'computer') {
+        playerScoreboard.style.backgroundColor = 'lightcoral';
+        computerScoreboard.style.backgroundColor = 'lightgreen';
+        computerWins++;
+    } else {
+        playerScoreboard.style.backgroundColor = 'yellow';
+        computerScoreboard.style.backgroundColor = 'yellow';
+    }
+
+    playerScoreElement.textContent = playerWins;
+    computerScoreElement.textContent = computerWins;
+
+    if (playerWins === 5 || computerWins === 5) endGame();
+}
+
+const buttons = document.querySelectorAll('button');
+buttons.forEach(button => button.addEventListener('click', buttonListener));
