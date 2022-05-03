@@ -5,6 +5,8 @@ const SCISSORS = 'scissors';
 const playerScoreElement = document.querySelector('#player-score');
 const computerScoreElement = document.querySelector('#computer-score');
 const matchupElement = document.querySelector('div.matchup');
+const playerScoreboard = playerScoreElement.parentNode;
+const computerScoreboard = computerScoreElement.parentNode;
 
 let roundsPlayed = 0;
 let playerWins = 0;
@@ -147,7 +149,12 @@ function endGame() {
         winnerElement.style.color = 'lightcoral';
     }
 
+    let resetButton = document.createElement('button');
+    resetButton.textContent = 'Retry?';
+    resetButton.addEventListener('click', resetGame);
+
     matchupElement.appendChild(winnerElement);
+    matchupElement.appendChild(resetButton);
 }
 
 function buttonListener(e) {
@@ -157,8 +164,6 @@ function buttonListener(e) {
 
 function updateScore(winner) {
     roundsPlayed++;
-    const playerScoreboard = playerScoreElement.parentNode;
-    const computerScoreboard = computerScoreElement.parentNode;
 
     if (winner === 'player') {
         playerScoreboard.style.backgroundColor = 'lightgreen';
@@ -177,6 +182,28 @@ function updateScore(winner) {
     computerScoreElement.textContent = computerWins;
 
     if (playerWins === 5 || computerWins === 5) endGame();
+}
+
+function resetGame(e) {
+    this.removeEventListener('click', resetGame);
+    matchupElement.removeChild(this);
+    matchupElement.removeChild(matchupElement.querySelector('span'));
+
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', buttonListener);
+    });
+
+    matchupElement.textContent = "";
+
+    roundsPlayed = 0;
+    playerWins = 0;
+    computerWins = 0;
+
+    playerScoreElement.textContent = 0;
+    computerScoreElement.textContent = 0;
+
+    playerScoreboard.style.backgroundColor = 'white';
+    computerScoreboard.style.backgroundColor = 'white';
 }
 
 const buttons = document.querySelectorAll('button');
